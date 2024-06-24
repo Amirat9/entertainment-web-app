@@ -4,6 +4,7 @@ import '../globals.css';
 import Navbar from '@/components/Navbar';
 import SearchBar from '@/components/SearchBar';
 import { connectToMongoDB } from '@/lib/db';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 const outfit = Outfit({ subsets: ['latin'] });
 
@@ -26,6 +27,7 @@ export default function RootLayout({
           <div className='space-y-6 w-full sm:space-y-8'>
             <SearchBar />
             {children}
+            <SpeedInsights />
           </div>
         </div>
       </body>
