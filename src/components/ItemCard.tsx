@@ -19,7 +19,17 @@ import { cn } from '@/lib/utils';
 
 type ThumbnailSizes = 'small' | 'medium' | 'large';
 
-interface ItemCardProps {
+const ItemCard = ({
+  title,
+  year,
+  rating,
+  category,
+  isBookmarked,
+  thumbnail,
+  isTrending,
+  type,
+  onBookmarkToggle,
+}: {
   title: string;
   year: number;
   rating: string;
@@ -38,34 +48,10 @@ interface ItemCardProps {
   };
   isTrending: boolean;
   type: string;
-  onBookmarkToggle: () => void;
-}
-
-const ItemCard: React.FC<ItemCardProps> = ({
-  title,
-  year,
-  rating,
-  category,
-  isBookmarked,
-  thumbnail,
-  isTrending,
-  type,
-  onBookmarkToggle,
+  onBookmarkToggle: VoidFunction;
 }) => {
   const [imageSize, setImageSize] = useState<ThumbnailSizes>('medium');
   const [imageSource, setImageSource] = useState<string>('');
-
-  const determineImageSource = () => {
-    if (isTrending && thumbnail.trending && type === 'Trending') {
-      if (window.innerWidth >= 748) {
-        setImageSource(thumbnail.trending.large.substring(1));
-      } else {
-        setImageSource(thumbnail.trending.small.substring(1));
-      }
-    } else {
-      setImageSource(thumbnail.regular[imageSize].substring(1));
-    }
-  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -78,18 +64,28 @@ const ItemCard: React.FC<ItemCardProps> = ({
       }
     };
 
-    handleResize();
-    determineImageSource();
-
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
+    const determineImageSource = () => {
+      if (isTrending && thumbnail.trending && type === 'Trending') {
+        if (window.innerWidth >= 748) {
+          setImageSource(thumbnail.trending.large.substring(1));
+        } else {
+          setImageSource(thumbnail.trending.small.substring(1));
+        }
+      } else {
+        setImageSource(thumbnail.regular[imageSize].substring(1));
+      }
     };
-  }, []);
 
-  useEffect(() => {
-    determineImageSource();
-  }, [imageSize, isTrending, thumbnail, type]);
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', handleResize);
+      handleResize(); // Set initial size
+      determineImageSource(); // Set initial image source
+
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
+    }
+  });
 
   return (
     <Card className='border-none bg-transparent text-white'>

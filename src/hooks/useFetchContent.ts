@@ -24,27 +24,26 @@ const useFetchContent = (type: string, bookmark?: boolean, params?: string) => {
 
   // Filter the data based on the type and bookmark status
   const filteredData = data.filter((item) => {
-    if (type === 'Search') {
-      // Ensure params is a string and use a case-insensitive search
-      if (params && typeof params === 'string') {
-        return item.title.toLowerCase().includes(params.toLowerCase());
-      }
-      return true; // If no search params, return all items
+    if (type === 'Search' && params) {
+      return item.title.toLowerCase().includes(params.toLowerCase());
+    }
+    if (type === 'Movies' && bookmark) {
+      return item.category === 'Movie' && item.isBookmarked === true;
+    }
+    if (type === 'TV Series' && bookmark) {
+      return item.category === 'TV Series' && item.isBookmarked === true;
     }
     if (type === 'Trending') {
       return item.isTrending === true;
     }
-    if (type === 'Recommended for you') {
-      return item.isTrending !== true;
+    if (type === 'Movies') {
+      return item.category === 'Movie' && item.isTrending !== true;
     }
 
-    if (type === 'Movies') {
-      return item.category === 'Movie';
-    } else if (bookmark === true) {
-      return item.category === type && item.isBookmarked === true;
-    } else {
-      return item.category === type && item.isTrending !== true;
+    if (type === 'TV Series') {
+      return item.category === 'TV Series' && item.isTrending !== true;
     }
+    return true;
   });
 
   return { data: filteredData, loading, error, setData };

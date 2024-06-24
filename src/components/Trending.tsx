@@ -10,7 +10,31 @@ import ItemCard from './ItemCard';
 import useFetchContent from '@/hooks/useFetchContent';
 
 const Trending = () => {
-  const { data } = useFetchContent('Trending', true || false);
+  const { data, setData } = useFetchContent('Trending', true || false);
+  const handleBookmarkToggle = async (id: string) => {
+    try {
+      const res = await fetch('/api/content', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id }),
+      });
+
+      if (!res.ok) {
+        throw new Error('Error updating bookmark status');
+      }
+
+      const updatedItem = await res.json();
+      setData((prevData: any[]) =>
+        prevData.map((item) =>
+          item._id === updatedItem._id ? updatedItem : item
+        )
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <section className='w-full'>
       <h2 className='self-start mb-6 text-xl text-white tracking-[0.3px] sm:tracking-normal sm:heading-l'>
@@ -42,6 +66,7 @@ const Trending = () => {
                 isBookmarked={item.isBookmarked}
                 isTrending={item.isTrending}
                 type='Trending'
+                onBookmarkToggle={() => handleBookmarkToggle(item._id)}
               />
             </CarouselItem>
           ))}
