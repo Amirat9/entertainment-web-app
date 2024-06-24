@@ -43,7 +43,9 @@ const useFetchContent = (type: string, bookmark?: boolean, params?: string) => {
     if (type === 'TV Series') {
       return item.category === 'TV Series' && item.isTrending !== true;
     }
-    return true;
+    if (type === 'Recommended for you') {
+      return item.isTrending !== true;
+    }
   });
 
   return { data: filteredData, loading, error, setData };
