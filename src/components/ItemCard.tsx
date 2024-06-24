@@ -65,7 +65,7 @@ const ItemCard = ({
     };
 
     const determineImageSource = () => {
-      if (isTrending && thumbnail.trending) {
+      if (isTrending && thumbnail.trending && type === 'Trending') {
         if (window.innerWidth >= 748) {
           setImageSource(thumbnail.trending.large.substring(1));
         } else {

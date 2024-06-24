@@ -5,8 +5,13 @@ import Content from '@/lib/models/contentSchema';
 export async function GET(req: NextRequest) {
   await connectToMongoDB();
 
+  const url = new URL(req.url);
+  const query = url.searchParams.get('q') || '';
+
   try {
-    const contents = await Content.find({});
+    const contents = await Content.find({
+      title: { $regex: query, $options: 'i' }, // Case-insensitive search
+    });
     return NextResponse.json(contents);
   } catch (error) {
     console.error('Error fetching contents:', error);

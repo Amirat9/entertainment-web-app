@@ -23,7 +23,7 @@ export default function RootLayout({
       <body className={outfit.className}>
         <div className='container p-0 sm:space-y-8 sm:p-6 sm:pb-14 lg lg:flex lg:gap-9'>
           <Navbar />
-          <div className='space-y-6 sm:space-y-8'>
+          <div className='space-y-6 w-full sm:space-y-8'>
             <SearchBar />
             {children}
           </div>
